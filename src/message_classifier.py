@@ -48,7 +48,8 @@ class MessageClassifier(object):
         param_grid = dictionary 
         	Metaparameters to grid search. 
 		"""
-		grid_search = GridSearchCV(estimator=pipeline, param_grid=param_grid, verbose=1, cv=5, n_jobs=-1).fit(train_X, train_y)
+		grid_search = GridSearchCV(estimator=pipeline, param_grid=param_grid, scoring='f1_micro', verbose=1, cv=5, n_jobs=-1)
+		grid_search.fit(train_X, train_y)
 		print( ('Best score %s of estimator %s') % (grid_search.best_score_, grid_search.best_estimator_))
 		self.clf = grid_search.best_estimator_
 		self.clf.fit(train_X, train_y)
