@@ -10,8 +10,7 @@ from matplotlib import pyplot as plt
 from sklearn.datasets import fetch_20newsgroups
 from sklearn.pipeline import Pipeline
 from sklearn.grid_search import GridSearchCV
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.feature_extraction.text import TfidfTransformer
+from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.linear_model import SGDClassifier
 from sklearn.externals import joblib
@@ -49,7 +48,7 @@ class MessageClassifier(object):
         param_grid = dictionary 
         	Metaparameters to grid search. 
 		"""
-		grid_search = GridSearchCV(estimator=pipeline, param_grid=param_grid, verbose=3, cv=5, n_jobs=-1).fit(train_X, train_y)
+		grid_search = GridSearchCV(estimator=pipeline, param_grid=param_grid, verbose=1, cv=5, n_jobs=-1).fit(train_X, train_y)
 		print( ('Best score %s of estimator %s') % (grid_search.best_score_, grid_search.best_estimator_))
 		self.clf = grid_search.best_estimator_
 		self.clf.fit(train_X, train_y)
