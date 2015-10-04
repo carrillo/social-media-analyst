@@ -1,6 +1,6 @@
 This set of scripts is thought to facilitate information gathering from social media. 
 
-1. network_search.py
+1. network_search.py (Check out the ipython notebook for an example!)
 
   Explores the messages, locations and connection of a user account of interest. 
   Information is stored in an sqlite database created for the source_node. 
