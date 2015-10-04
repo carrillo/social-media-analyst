@@ -26,12 +26,18 @@ class NetworkGraph(object):
 		for edge in self.db_session.query(Connection).all(): 
 			self.graph.add_edge(edge.user_1_name, edge.user_2_name, weight=edge.weight)
 
-	def draw(self): 
+	def draw(self, node_size=10, edge_width=1, figure_size=[6,6]): 
 		"""
 		Draws the graph. 
 		"""
-		nx.draw_spring(self.graph)
-		#nx.draw(self.graph)
+		elarge=[(u,v) for (u,v,d) in self.graph.edges(data=True) if d['weight'] > 5]
+		esmall=[(u,v) for (u,v,d) in self.graph.edges(data=True) if d['weight'] <= 5]
+
+		pos=nx.spring_layout(self.graph) # positions for all nodes
+		nx.draw_networkx_nodes(self.graph,pos,node_size=node_size)
+		nx.draw_networkx_edges(self.graph,pos,edgelist=elarge,width=edge_width)
+		nx.draw_networkx_edges(self.graph,pos,edgelist=esmall,width=edge_width,alpha=0.5,edge_color='b',style='dashed')
+
 		plt.show()
 
 	def page_rank(self): 
@@ -62,7 +68,7 @@ if __name__ == '__main__':
 	ng = NetworkGraph(db_session=session)
 	ng.build()
 	ng.draw()
-	node_rank = ng.get_top_nodes(n=10)
-	print(node_rank)
+	#node_rank = ng.get_top_nodes(n=10)
+	#print(node_rank)
 	
 		

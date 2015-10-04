@@ -3,7 +3,7 @@ __email__ = "fernando at carrillo.at"
 
 import pandas as pd
 import numpy as np 
-
+from time import time
 
 from users import Twitter_user
 from twitter_auth import Twitter_auth
@@ -19,7 +19,7 @@ class Network_search(object):
 	"""
 	Performs a search around a given starting username of depth n. 
 	"""
-	def __init__(self, user_object, db_session, max_depth=1): 
+	def __init__(self, user_object, db_session): 
 		"""
 		@param user_object Subclass of User_base class
 		@param db_session database connection 
@@ -30,8 +30,6 @@ class Network_search(object):
 		self.db_session = db_session
 		self.cur_depth = 0
 		self.add_user(self.root_node)
-		#self.cur_depth += 1 
-		self.max_depth = max_depth
 		
 			
 	def add_user(self, user_name): 
@@ -99,7 +97,7 @@ class Network_search(object):
 		self.db_session.add(new_location)
 		self.db_session.commit()
 
-	def search_current_depth(self, message_count=100, dump=True, fraction_connections=1.0): 
+	def search_current_depth(self, message_count=100, dump=True, fraction_connections=1.0, verbose=1): 
 		"""
 		@param: message_count Number of messages to retrieve
 		@param: dump Dump user object to file (either pickled or JSON (twitter) )
@@ -112,11 +110,14 @@ class Network_search(object):
 		"""
 
 		users = self.get_users_of_current_depth()
+		if verbose > 0: 
+			print('Iterating through %d users at current depth %d' % (len(users), self.cur_depth))
 		self.cur_depth += 1
 		for user in users: # Iterate through all users of the current depth. 
 			if not user.visited:
 				u1 = user.name
-				print(u1)
+				if verbose > 1: 
+					print(u1)
 				setattr(self.user_object, 'user_name', u1)
 				#user = Twitter_user(u1, Twitter_auth().authenticate())
 				self.user_object.load(message_count)
@@ -143,12 +144,20 @@ class Network_search(object):
 
 				self.set_user_visited(user_name=u1)
 
-	def run(self, message_count=100, dump=True, fraction_connections=0.2): 
+	def run(self, message_count=100, dump=True, fraction_connections=0.2, max_depth=1, verbose=1): 
 		"""
 		Run the network search. 
 		"""
-		while (self.cur_depth <= self.max_depth): 
-			self.search_current_depth(message_count=message_count, dump=dump, fraction_connections=fraction_connections)
+		t0 = time() 
+		if verbose > 0: 
+			print('Network search started.')
+		
+		self.max_depth = max_depth
+		while self.cur_depth <= self.max_depth: 
+			self.search_current_depth(message_count=message_count, dump=dump, fraction_connections=fraction_connections, verbose=verbose)
+		
+		if verbose > 0: 
+			print('Collected %d tweets from %d users in %fm' % (len(self.db_session.query(Message).all()), len(self.db_session.query(User).all()), (time()-t0)/60))
 		
 if __name__ == '__main__':
 
@@ -156,13 +165,16 @@ if __name__ == '__main__':
 	source_node_name = 'testuser'
 
 	# Set up the database connection
-	create_sqlite_db(source_node_name)
-	engine = create_engine('sqlite:///data/' + source_node_name + '.db')
+	db_path = 'sqlite:///data/' + source_node_name + '.db'
+	create_sqlite_db(db_path)
+	engine = create_engine(db_path)
 	Base.metadata.bind = engine 
 	DBSession = sessionmaker(bind=engine)
 	session = DBSession()
 
-	# Add root node user. 
+	# Start the search. 
 	user = Twitter_user(source_node_name, Twitter_auth().authenticate())
-	search = Network_search(user_object=user, db_session=session, max_depth=3)
-	search.run(message_count=1000, dump=False, fraction_connections=0.02) # Get the top 2% connection of the last 1000 messages. 
+	search = Network_search(user_object=user, db_session=session)
+	search.run(message_count=1000, dump=False, fraction_connections=0.02, max_depth=1, verbose=1) # Get the top 2% connection of the last 1000 messages. 
+
+

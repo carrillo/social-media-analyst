@@ -65,9 +65,9 @@ engine = create_engine('sqlite:///data/twitter_search.db')
 # Create all tables in the engine 
 Base.metadata.create_all(engine)
 
-def create_sqlite_db(name):
+def create_sqlite_db(path):
 	# Create an engine that stores data in the local path 
-	engine = create_engine('sqlite:///data/' + name + '.db')
+	engine = create_engine(path)
 
 	# Create all tables in the engine 
 	Base.metadata.create_all(engine)
