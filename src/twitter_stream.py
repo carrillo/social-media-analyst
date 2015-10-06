@@ -7,13 +7,14 @@ from tweepy import Stream
 import sys
 import getopt
 from twitter_auth import Twitter_auth
+import json
 
 class STdOutListener(StreamListener):
 	"""
 	This is a basic listener that just prints received tweets to stdout 
 	"""
 	def on_data(self, data):
-		print data
+		print(data)
 		return True
 
 	def on_error(self, status):
