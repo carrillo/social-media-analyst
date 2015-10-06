@@ -8,7 +8,6 @@ from time import time
 
 from message_classifier import MessageClassifier
 
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.sql import exists

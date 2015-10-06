@@ -23,7 +23,9 @@ class STdOutListener(StreamListener):
 if __name__ == '__main__':
 
 	# Read filter keywords from argv array. 
-	keywords = sys.argv[1:]
+	
+	keywords = ['git']
+	keywords = [] 
 	#print(keywords)     	
 	
 	# This handles Twitter authentification and the connection to Twitter Streaming API 
@@ -34,7 +36,10 @@ if __name__ == '__main__':
 
 	# This line filters Twitter streams to track keywords. 
 	try:
-		stream.filter(track=keywords)
+		if len(keywords) == 0: 
+			stream.sample()
+		else: 
+			stream.filter(track=keywords)
 	except Exception, e:
 		print >> sys.stderr, e 
 		pass
