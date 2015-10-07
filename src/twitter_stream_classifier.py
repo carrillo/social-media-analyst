@@ -108,7 +108,7 @@ class TwitterStreamClassifier(StreamListener):
 				self.add_message(u1, message)
 				geostring = str(tweet['coordinates'])
 				if (geostring == 'None'): geostring = np.nan
-				self.add_location(u1, geojson, tweet['user']['location'])
+				self.add_location(u1, geostring, tweet['user']['location'])
 				for u2 in re.findall('\B\@\w+', str(tweet)): 
 					self.add_connection(user_name1=u1, user_name2=u2.strip('\@'), weight=1)
 		# Delete entries from the buffer. 
