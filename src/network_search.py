@@ -162,7 +162,7 @@ class Network_search(object):
 if __name__ == '__main__':
 
 	# Select source node user name. 
-	source_node_name = 'testuser'
+	source_node_name = 'barrefaeli'
 
 	# Set up the database connection
 	db_path = 'sqlite:///data/' + source_node_name + '.db'
@@ -175,6 +175,6 @@ if __name__ == '__main__':
 	# Start the search. 
 	user = Twitter_user(source_node_name, Twitter_auth().authenticate())
 	search = Network_search(user_object=user, db_session=session)
-	search.run(message_count=1000, dump=False, fraction_connections=0.02, max_depth=1, verbose=1) # Get the top 2% connection of the last 1000 messages. 
+	search.run(message_count=1000, dump=False, fraction_connections=0.02, max_depth=3, verbose=2) # Get the top 2% connection of the last 1000 messages. 
 
 

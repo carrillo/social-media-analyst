@@ -22,7 +22,7 @@ class TwitterStreamClassifier(StreamListener):
  	"""
  	docstring for TwitterStreamClassifier
  	"""
- 	def __init__(self, db_session, classifier, classes_of_interest, batch_size=100, probability_threshold=0, verbose=1):
+ 	def __init__(self, db_session, classifier, classes_of_interest, batch_size=10000, probability_threshold=0, verbose=1):
  		"""
  		classifier : 
  			Classifier used for tweet classification 
@@ -139,7 +139,7 @@ if __name__ == '__main__':
 	session = DBSession()
 
 	# Load the StreamListener. This holds the classifier. 
-	lister = TwitterStreamClassifier(db_session=session, classifier=mc, classes_of_interest=['sci.med'], probability_threshold=0.5)
+	lister = TwitterStreamClassifier(db_session=session, classifier=mc, classes_of_interest=['sci.med'], probability_threshold=0.95)
 
 	# Get login from Twitter_auth module. 
 	stream = Stream(Twitter_auth().authenticate(), lister)
