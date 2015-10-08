@@ -9,8 +9,7 @@
   <li>twitter_stream_classification.py</li>
 </ul>
 
-<h2> network_search.py </h2>
-  (Check out the ipython notebook for an example!)
+<h2> network_search.py (Check out the example ipython notebook)</h2>
 
   Explores the messages, locations and connection of a user account of interest. 
   Information is stored in an sqlite database created for the source_node. 
