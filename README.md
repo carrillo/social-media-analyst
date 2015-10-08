@@ -6,7 +6,7 @@
 <ul>
   <li>network_search.py</li>
   <li>message_classification.py</li>
-  <li>tweet_stream_classification.py</li>
+  <li>twitter_stream_classification.py</li>
 </ul>
 
 <h2> network_search.py </h2>
