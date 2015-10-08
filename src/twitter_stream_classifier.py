@@ -119,8 +119,7 @@ class TwitterStreamClassifier(StreamListener):
 
 if __name__ == '__main__':
 
-	# set keywords to filter. 
-	keywords = ['git']
+	# set keywords to filter.
 	keywords = [] 
 	
 	# Load trained classfier. At this point this is trained on the 
