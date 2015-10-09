@@ -60,7 +60,7 @@ class NetworkGraph(object):
 	
 if __name__ == '__main__':
 	# Set-up connection to message data_base 
-	engine = create_engine('sqlite:///data/testuser.db')
+	engine = create_engine('sqlite:///data/twitter_stream.db')
 	Base.metadata.bind = engine 
 	DBSession = sessionmaker(bind=engine)
 	session = DBSession()
