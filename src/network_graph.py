@@ -16,7 +16,7 @@ class NetworkGraph(object):
 	"""docstring for NetworkGraph"""
 	def __init__(self, db_session):
 		self.db_session = db_session
-		self.graph = nx.Graph() 
+		self.graph = nx.DiGraph()
 
 	def build(self): 
 		"""
@@ -46,6 +46,25 @@ class NetworkGraph(object):
 		"""
 		return nx.pagerank(self.graph)
 
+
+	def filter_graph_for_connected_components(self, min_nodes=2): 
+		"""
+		Get weakly connected components in graph. 
+		min_nodes : int 
+			Return only connected components with a minimal number of min_nodes
+		"""
+		edges = [] 
+		for g in nx.weakly_connected_component_subgraphs(self.graph): 
+			if len(g.nodes(data=True)) >= min_nodes: 
+				for e in g.edges(data=True): 
+					edges.append(e)
+
+		self.graph = nx.DiGraph(edges)
+		# for edge in self.db_session.query(Connection).all(): 
+		# 	print(edge)
+		# 	#self.graph.add_edge(edge.user_1_name, edge.user_2_name, weight=edge.weight)
+		
+
 	def get_top_nodes(self, n=-1): 
 		"""
 		Returns a list of the top n nodes in sorted order. 
@@ -67,7 +86,9 @@ if __name__ == '__main__':
 
 	ng = NetworkGraph(db_session=session)
 	ng.build()
+	ng.filter_graph_for_connected_components(min_nodes=3)
 	ng.draw()
 	node_rank = ng.get_top_nodes(n=10)
+	print(node_rank)
 	
 		
