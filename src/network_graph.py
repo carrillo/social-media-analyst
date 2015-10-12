@@ -34,6 +34,7 @@ class NetworkGraph(object):
 		esmall=[(u,v) for (u,v,d) in self.graph.edges(data=True) if d['weight'] <= 5]
 
 		pos=nx.spring_layout(self.graph) # positions for all nodes
+		#pos=nx.spectral_layout(self.graph)
 		nx.draw_networkx_nodes(self.graph,pos,node_size=node_size)
 		nx.draw_networkx_edges(self.graph,pos,edgelist=elarge,width=edge_width)
 		nx.draw_networkx_edges(self.graph,pos,edgelist=esmall,width=edge_width,alpha=0.5,edge_color='b',style='dashed')
@@ -47,7 +48,7 @@ class NetworkGraph(object):
 		return nx.pagerank(self.graph)
 
 
-	def filter_graph_for_connected_components(self, min_nodes=2): 
+	def filter_graph_for_weakly_connected_components(self, min_nodes=2): 
 		"""
 		Get weakly connected components in graph. 
 		min_nodes : int 
@@ -60,10 +61,20 @@ class NetworkGraph(object):
 					edges.append(e)
 
 		self.graph = nx.DiGraph(edges)
-		# for edge in self.db_session.query(Connection).all(): 
-		# 	print(edge)
-		# 	#self.graph.add_edge(edge.user_1_name, edge.user_2_name, weight=edge.weight)
-		
+
+	def filter_graph_for_strongly_connected_components(self, min_nodes=2): 
+		"""
+		Get strongly connected components in graph. 
+		min_nodes : int 
+			Return only connected components with a minimal number of min_nodes
+		"""
+		edges = [] 
+		for g in nx.strongly_connected_component_subgraphs(self.graph): 
+			if len(g.nodes(data=True)) >= min_nodes: 
+				for e in g.edges(data=True): 
+					edges.append(e)
+
+		self.graph = nx.DiGraph(edges)
 
 	def get_top_nodes(self, n=-1): 
 		"""
@@ -86,7 +97,7 @@ if __name__ == '__main__':
 
 	ng = NetworkGraph(db_session=session)
 	ng.build()
-	ng.filter_graph_for_connected_components(min_nodes=10)
+	ng.filter_graph_for_strongly_connected_components(min_nodes=2)
 	ng.draw()
 	node_rank = ng.get_top_nodes(n=10)
 	print(node_rank)
