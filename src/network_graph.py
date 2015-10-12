@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
 	ng = NetworkGraph(db_session=session)
 	ng.build()
-	ng.filter_graph_for_connected_components(min_nodes=3)
+	ng.filter_graph_for_connected_components(min_nodes=10)
 	ng.draw()
 	node_rank = ng.get_top_nodes(n=10)
 	print(node_rank)
